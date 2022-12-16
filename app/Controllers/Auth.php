@@ -9,8 +9,20 @@ class Auth extends BaseController
 {
     public function index()
     {
-        return view('auth/login');
+        if(!session()->get('logged')){
+            return view('auth/login');
+        }
+        return redirect()->to('/home');
     }
+
+    public function registration()
+    {
+        if(!session()->get('logged')){
+            return view('auth/signup');
+        }
+        return redirect()->to('/home');
+    }
+    
     public function login()
     {   
         $session = session();
@@ -29,16 +41,31 @@ class Auth extends BaseController
                     'logged' => TRUE
                 ];
                 $session->set($ses_data);
+                return redirect()->to('/home');
             }else{
-                echo 'wrong';
+                return redirect()->to('/');
             }
         }else{
-            echo 'tidak ada';
+            return redirect()->to('/');
         }
     }
+
+    public function signup()
+    {   
+        $users = new UserModel();
+        $data = [
+            'email' => $this->request->getVar('email'),
+            'username' => $this->request->getVar('username'),
+            'password' => $this->request->getVar('password'),
+        ];
+        $users->insert($data);
+        return redirect()->to('/');
+    }
+
     public function logout()
     {
         $session = session();
         $session->destroy();
+        return redirect()->to('/');
     } 
 }

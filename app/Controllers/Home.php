@@ -7,6 +7,7 @@ class Home extends BaseController
     public function index()
     {
         $session = session();
-        echo 'Welcome back ' . $session->get('email');
+        $data['username'] = $session->get('username');
+        return view('pages/users/test', $data);
     }
 }
